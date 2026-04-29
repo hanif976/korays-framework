@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 logger = logging.getLogger(__name__)
@@ -41,16 +41,13 @@ class Refresher:
         from korays.internal_linker import InternalLinker
         from korays.exporter import Exporter
 
-        stamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         refresh_dir = os.path.join(self.output_dir, f"refresh_{stamp}")
 
         logger.info("Starting refresh → %s", refresh_dir)
 
         seeds = SeedCollector().collect(new_urls)
         df = Normalizer().normalize(seeds)
-        df = Clusterer(n_clusters=n_clusters).fit_predict(df)
-
-        # Re-build cluster_terms after clustering
         clusterer = Clusterer(n_clusters=n_clusters)
         df = clusterer.fit_predict(df)
         cluster_terms = clusterer.cluster_terms

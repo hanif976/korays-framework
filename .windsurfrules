@@ -1,0 +1,38 @@
+# Windsurf Rules — korays-framework
+# Loaded automatically by the Windsurf IDE.
+
+## Project Context
+korays-framework is a Python library that automates Koray-style topical authority SEO.
+It runs a 9-step pipeline: fetch URLs → cluster topics → generate briefs → score → export Markdown/PDF.
+
+## Language
+- Python >= 3.9
+- `from __future__ import annotations` must be present in every module
+
+## Coding Standards
+- Full type hints on all functions and dataclass fields
+- `@dataclass` for data transfer objects
+- `logging.getLogger(__name__)` for all log output; no bare `print()`
+- No circular imports — modules may only import from earlier pipeline steps
+
+## Module Map
+```
+korays/seed_collector.py   → SeedCollector   (Step 1)
+korays/normalizer.py       → Normalizer      (Step 2)
+korays/clusterer.py        → Clusterer       (Step 3)
+korays/hierarchy_builder.py→ HierarchyBuilder(Step 4)
+korays/brief_generator.py  → BriefGenerator  (Step 5)
+korays/scorer.py           → Scorer          (Step 6)
+korays/internal_linker.py  → InternalLinker  (Step 7)
+korays/exporter.py         → Exporter        (Step 8)
+korays/refresher.py        → Refresher       (Step 9)
+```
+
+## Testing
+```bash
+python -m pytest tests/ -v
+```
+Tests use synthetic data. Never make real HTTP requests in tests.
+
+## Reference
+See `agent.md` for the complete technical reference.

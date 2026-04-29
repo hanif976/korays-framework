@@ -1,58 +1,206 @@
-# Koray-Style Topical Authority Stack: Agent Guide
+# Koray-Style Topical Authority Stack — Agent Guide
 
-## 1. Purpose
-This document serves as a comprehensive guide for the agent operating within the Koray-style topical authority stack. The agent's main purpose is to streamline processes that enhance topical authority through systematic seed collection, normalization, clustering, hierarchy building, brief generation, scoring, internal linking, export, and refresh.
+> **AI Coding Agents**: This is the primary technical reference for working on this codebase.
+> Read it in full before making any changes.
 
-## 2. Core Principles
-- **Accuracy**: Maintain precision in data collection and processing.
-- **Efficiency**: Streamline operations to reduce time spent on tasks.
-- **Quality**: Adhere to a high standard of output to ensure authority in the topical domain.
+---
 
-## 3. Operating Procedure
-1. **Seed Collection**: Identify and gather seeds from reputable sources. 
-   - Sources: Academic publications, trusted websites, and expert blogs.
-   - Frequency: Daily collection.
+## 1. Project Purpose
 
-2. **Normalization**: Standardize the collected data into a uniform format.
-   - Tools: Use data cleaning libraries (e.g., Pandas) to remove duplicates and irrelevant information.
+`korays-framework` automates the full **Koray-style topical authority** workflow:
 
-3. **Clustering**: Group normalized seeds into relevant categories based on their content.
-   - Techniques: Apply clustering algorithms like K-means or hierarchical clustering.
+```
+seed collection → normalisation → clustering → hierarchy building →
+brief generation → scoring → internal linking → export → refresh
+```
 
-4. **Hierarchy Building**: Construct a logical structure representing relationships between topics.
-   - Methodology: Utilize tree or graph structures to visualize connections.
+It is a Python library (`korays/`) with a CLI entry-point (`pipeline.py`).  
+Outputs are Markdown files (and optional PDFs) representing authoritative topic clusters.
 
-5. **Brief Generation**: Create concise summaries for each cluster to guide readers.
-   - Format: Each brief should be 150-200 words.
+---
 
-6. **Scoring**: Evaluate the relevance and quality of each brief.
-   - Scale: Use a scoring system from 1 to 10, where 10 represents high authority.
+## 2. Repository Layout
 
-7. **Internal Linking**: Strategically link clusters to one another to enhance navigation.
-   - Best Practices: Use contextual linking where applicable to foster engagement.
+```
+korays-framework/
+├── korays/                   # Core library — one module per pipeline step
+│   ├── __init__.py           # Public API re-exports
+│   ├── seed_collector.py     # Step 1 — HTTP fetch + HTML parse
+│   ├── normalizer.py         # Step 2 — clean, deduplicate, lowercase
+│   ├── clusterer.py          # Step 3 — TF-IDF + K-means
+│   ├── hierarchy_builder.py  # Step 4 — NetworkX directed graph
+│   ├── brief_generator.py    # Step 5 — 150-200 word cluster summaries
+│   ├── scorer.py             # Step 6 — 1-10 quality score
+│   ├── internal_linker.py    # Step 7 — Markdown hyperlink injection
+│   ├── exporter.py           # Step 8 — write .md / .pdf files
+│   └── refresher.py          # Step 9 — datestamped re-run
+├── tests/
+│   └── test_pipeline.py      # Smoke tests — no network, in-memory data only
+├── pipeline.py               # CLI orchestrator (argparse entry-point)
+├── pyproject.toml            # PEP 517 build config + project metadata
+└── requirements.txt          # Pinned runtime dependencies
+```
 
-8. **Export**: Prepare the finalized documents for publication.
-   - Formats: Provide outputs in Markdown and PDF.
+---
 
-9. **Refresh**: Regularly update the content based on new seeds and changes in topical relevance.
-   - Schedule: Monthly reviews and updates.
+## 3. Key Data Structures
 
-## 4. Output Format
-- Files will be provided in Markdown format including links, references, and structured data tables where applicable.
+Data flows through the pipeline as a chain of typed objects:
 
-## 5. Quality Bar
-- All outputs must meet a minimum quality score of 8/10 based on the established scoring system.
-- Content must be free from grammatical errors and must reflect the latest research.
+| Type | Module | Fields |
+|------|--------|--------|
+| `Seed` | `seed_collector` | `url`, `title`, `body`, `metadata: dict` |
+| `pd.DataFrame` | `normalizer` → `clusterer` | columns: `url`, `title`, `body`, `cluster` (int) |
+| `Brief` | `brief_generator` | `cluster_id`, `title`, `body`, `word_count` |
+| `ScoredBrief` | `scorer` | `brief: Brief`, `score: float`, `breakdown: dict` |
+| `LinkedBrief` | `internal_linker` | `cluster_id`, `title`, `body`, `score`, `links: list[tuple[str,str]]` |
 
-## 6. Agent Instructions
-- Follow the outlined procedure step-by-step.
-- Report any discrepancies or issues immediately.
+Always preserve this chain when extending the pipeline.
 
-## 7. Definition of Done
-- All tasks are marked complete when they meet the quality bar and have been reviewed for accuracy and relevance.
+---
 
-## 8. Execution Contract
-The agent agrees to follow through the execution of the procedures with diligence:
-- Comply with the frequency and quality requirements.
-- Ensure all outputs are aligned with the core principles outlined.
-- Adhere to feedback provided during review sessions and improve accordingly.
+## 4. Development Setup
+
+```bash
+# 1. Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+# 2. Install runtime + dev dependencies
+pip install -r requirements.txt
+pip install -e .                 # Installs the `korays` CLI entry-point
+
+# 3. Run the test suite (no network required)
+python -m pytest tests/ -v
+
+# 4. Run a quick smoke run against live URLs
+python pipeline.py --urls https://example.com/a --clusters 3
+```
+
+---
+
+## 5. CLI Reference
+
+```
+korays [--urls URL [URL ...]]
+       [--output-dir DIR]          # default: output/
+       [--clusters N]              # default: 5
+       [--min-score SCORE]         # default: 8.0, range 1-10
+       [--pdf]                     # also generate PDF exports
+```
+
+The `korays` command is registered via `[project.scripts]` in `pyproject.toml` and maps to `pipeline:main`.
+
+---
+
+## 6. Module API Summary
+
+### `SeedCollector`
+```python
+seeds: list[Seed] = SeedCollector().collect(urls: list[str])
+```
+- Fetches URLs in parallel (ThreadPoolExecutor, default 8 workers).
+- Returns results in the original URL order.
+- Failed URLs are logged as warnings and skipped.
+
+### `Normalizer`
+```python
+df: pd.DataFrame = Normalizer().normalize(seeds: list[Seed])
+```
+- Strips HTML tags, collapses whitespace, lowercases.
+- Drops rows with empty `body`; deduplicates on `body`.
+
+### `Clusterer`
+```python
+clusterer = Clusterer(n_clusters=5)
+df = clusterer.fit_predict(df)        # adds 'cluster' column
+terms = clusterer.cluster_terms       # dict[int, list[str]] — top-10 terms per cluster
+```
+- Uses `TfidfVectorizer(max_features=5000)` + L2-normalised `KMeans`.
+- `n_clusters` is capped at `len(df)` automatically.
+
+### `HierarchyBuilder`
+```python
+hb = HierarchyBuilder()
+graph: nx.DiGraph = hb.build(df, cluster_terms)
+hb.to_json("output/hierarchy.json")
+```
+- Root node → every cluster; clusters sharing ≥2 top terms get a direct edge.
+
+### `BriefGenerator`
+```python
+briefs: list[Brief] = BriefGenerator().generate(df, cluster_terms)
+```
+- Produces one `Brief` per cluster; trims to 150-200 words at sentence boundaries.
+
+### `Scorer`
+```python
+scored: list[ScoredBrief] = Scorer().score_all(briefs)
+```
+- Score = `0.4 × length_score + 0.4 × keyword_density_score + 0.2 × uniqueness_score`
+
+### `InternalLinker`
+```python
+linked: list[LinkedBrief] = InternalLinker().link(scored_briefs)
+```
+- Injects `[keyword](#cluster-N)` anchors into brief bodies; builds `links` list.
+
+### `Exporter`
+```python
+paths: list[str] = Exporter(output_dir="output").export(linked, to_pdf=False)
+```
+- Writes `cluster-{id}.md`; optionally `cluster-{id}.pdf` via `fpdf2`.
+
+### `Refresher`
+```python
+paths = Refresher(output_dir="output").refresh(new_urls, n_clusters=5, min_score=8.0)
+```
+- Re-runs the full pipeline into `output/refresh_YYYYMMDD_HHMMSS/`.
+
+---
+
+## 7. Adding a New Pipeline Step
+
+1. Create `korays/my_step.py` with a class and a primary method.
+2. Add the new dataclass or return type (if any).
+3. Import and call it in the correct position inside `pipeline.py:run_pipeline()`.
+4. Export the class from `korays/__init__.py`.
+5. Add smoke tests in `tests/test_pipeline.py` (no network, synthetic data only).
+
+---
+
+## 8. Code Conventions
+
+- **Python ≥ 3.9**; use `from __future__ import annotations` in every module.
+- **Type hints** everywhere — function signatures, dataclass fields, return types.
+- **`logging`** via `logger = logging.getLogger(__name__)` — never `print()` in library code.
+- **Dataclasses** for plain data objects (`Seed`, `Brief`, `ScoredBrief`, `LinkedBrief`).
+- **No circular imports** — each step imports only from earlier steps.
+- **Tests**: in-memory synthetic data only; patch network calls with `unittest.mock`.
+
+---
+
+## 9. Testing Guidelines
+
+- Run: `python -m pytest tests/ -v`
+- All tests in `tests/test_pipeline.py` use `_make_seeds(n)` for synthetic data.
+- No test should make real HTTP requests — mock `requests.get` if needed.
+- PDF tests are skipped when `fpdf2` is unavailable; that is expected.
+
+---
+
+## 10. Quality Bar
+
+- All pipeline outputs must score **≥ 8.0 / 10** (overridable via `--min-score`).
+- Brief bodies must be **150-200 words**.
+- Exported Markdown must be **valid CommonMark**.
+
+---
+
+## 11. Definition of Done
+
+A change is complete when:
+1. All existing tests pass (`pytest tests/ -v`).
+2. New behaviour is covered by at least one new test.
+3. Public API is reflected in this file and in `korays/__init__.py`.
+4. `README.md` is updated if CLI options or workflow steps change.

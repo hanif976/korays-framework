@@ -1,0 +1,37 @@
+# Cursor Rules — korays-framework
+# These rules are loaded automatically by Cursor IDE.
+
+## Project
+Python library implementing a 9-step Koray-style topical authority SEO pipeline.
+Entry-point: pipeline.py (CLI). Core library: korays/ package.
+
+## Language & Version
+- Python >= 3.9
+- Always add `from __future__ import annotations` as the first import
+
+## Code Style
+- Type hints on every function signature and dataclass field
+- Use `@dataclass` for all data transfer objects (Seed, Brief, ScoredBrief, LinkedBrief)
+- Use `logging.getLogger(__name__)` — never `print()` in library code
+- Follow the existing module docstring format: `"""Step N — Title.\n\nDescription.\n"""`
+
+## Architecture Rules
+- No circular imports: each korays module may only import from earlier pipeline steps
+- pipeline.py is the sole orchestrator — do not add orchestration logic to library modules
+- Every new public class must be exported from korays/__init__.py
+
+## Pipeline Data Flow
+list[str] URLs → list[Seed] → pd.DataFrame → (+ cluster col) → list[Brief]
+  → list[ScoredBrief] → list[LinkedBrief] → list[str] (output file paths)
+
+## Testing
+- Test file: tests/test_pipeline.py
+- Run: `python -m pytest tests/ -v`
+- Use synthetic in-memory data only; no real HTTP calls in tests
+- Mock `requests.get` with `unittest.mock.patch` for SeedCollector tests
+
+## Key Files to Understand First
+1. pipeline.py          — shows the complete data flow
+2. korays/__init__.py   — public API surface
+3. tests/test_pipeline.py — shows expected behaviour of each class
+4. agent.md             — full technical reference

@@ -1,0 +1,45 @@
+project:
+  name: "Korays Framework"
+  country: "US"
+  language: "en"
+  niche: "semantic seo"
+
+providers:
+  serp: "dataforseo"
+  ai: "gemini"
+  embeddings: "sentence-transformers"
+
+limits:
+  serp_top_n: 10
+  competitor_pages_per_query: 5
+  max_queries_per_seed: 250
+  max_briefs_per_run: 100
+
+clustering:
+  serp_overlap_weight: 0.35
+  embedding_weight: 0.25
+  entity_weight: 0.20
+  intent_weight: 0.10
+  modifier_weight: 0.10
+  same_page_threshold: 0.70
+  same_cluster_threshold: 0.45
+
+briefs:
+  require_information_gain: true
+  require_schema_suggestions: true
+  require_internal_links: true
+  require_eav_triples: true
+  require_expert_review_for_ymyl: true
+
+quality:
+  min_entity_coverage_score: 0.75
+  min_intent_match_score: 0.80
+  max_cannibalization_risk: 0.70
+  min_information_gain_items: 2
+
+exports:
+  json: true
+  csv: true
+  xlsx: true
+  markdown: true
+  mermaid: true

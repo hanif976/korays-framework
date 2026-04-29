@@ -1,50 +1,70 @@
-# Koray-Style Topical Authority Stack
+# Korays Framework: Topical Authority Operating System
 
-A Python framework that automates the full **Koray-style topical authority** workflow:
-seed collection → normalisation → clustering → hierarchy building → brief generation →
-scoring → internal linking → export → refresh.
+`korays-framework` is a production-grade framework that automates the full topical authority workflow: niche research → semantic topical map → content briefs → internal link graph → technical SEO.
+
+## Features
+
+- **Provider-agnostic AI layer**: Support for Gemini, OpenAI, Claude, and local LLMs.
+- **Full SEO data model**: Queries, SERPs, competitors, entities, and EAV triples.
+- **Hybrid clustering**: SERP overlap, embeddings, and intent similarity.
+- **Entity-first topical authority**: Advanced semantic relationship mapping.
+- **Content Briefs V2**: Comprehensive Markdown briefs with information gain and QA.
+- **Search Console Loop**: Performance-driven content refresh planning.
 
 ## Quickstart
 
+### 1. Installation
+
 ```bash
-pip install -r requirements.txt
-python pipeline.py --urls https://example.com/article1 https://example.com/article2
+npm install
+npm run build
 ```
 
-## CLI Options
+### 2. Configuration
 
-```
-usage: pipeline.py [-h] [--urls URLS [URLS ...]] [--output-dir OUTPUT_DIR]
-                   [--clusters CLUSTERS] [--min-score MIN_SCORE]
+Create a `.env` file from `.env.example` and add your API keys:
 
-optional arguments:
-  --urls          One or more seed URLs to collect content from
-  --output-dir    Directory where Markdown/PDF outputs are written (default: output/)
-  --clusters      Number of topic clusters (default: 5)
-  --min-score     Minimum quality score threshold 1-10 (default: 8.0)
+```bash
+GEMINI_API_KEY=your_key
+SERP_API_KEY=your_key
 ```
 
-## Workflow Steps
+### 3. Run Pipeline
 
-| # | Module | Description |
-|---|--------|-------------|
-| 1 | `korays/seed_collector.py` | Fetch & parse content from URLs |
-| 2 | `korays/normalizer.py` | Clean, deduplicate, standardise text |
-| 3 | `korays/clusterer.py` | TF-IDF + K-means clustering |
-| 4 | `korays/hierarchy_builder.py` | Build topic relationship graph |
-| 5 | `korays/brief_generator.py` | 150-200 word cluster summaries |
-| 6 | `korays/scorer.py` | 1-10 quality scoring |
-| 7 | `korays/internal_linker.py` | Contextual cross-cluster linking |
-| 8 | `korays/exporter.py` | Markdown & PDF export |
-| 9 | `korays/refresher.py` | Monthly refresh orchestration |
+```bash
+npm run korays -- map --seeds "semantic seo" "topical authority"
+```
+
+Outputs will be generated in `data/output/`.
+
+## Architecture
+
+The system uses a multi-agent orchestration pattern:
+
+- **SERP Agent**: Collects and analyzes search results.
+- **Entity Agent**: Extracts entities and relationships.
+- **Clustering Agent**: Groups topics semantically.
+- **Hierarchy Agent**: Builds the topical map structure.
+- **Brief Agent**: Generates production-ready content briefs.
 
 ## Project Structure
 
 ```
 korays-framework/
-├── korays/               # Core library modules
-├── tests/                # Unit / smoke tests
-├── pipeline.py           # CLI orchestrator
-├── requirements.txt
-└── pyproject.toml
+├── config/           # YAML configuration
+├── src/              # TypeScript source code
+│   ├── core/         # Core abstractions & AI clients
+│   ├── agents/       # AI agents
+│   ├── collectors/   # Data collectors
+│   ├── nlp/          # NLP & entity extraction
+│   └── exporters/    # Exporters (MD, JSON, CSV)
+├── python/           # Legacy/Optional Python workers
+└── data/
+    └── output/       # Generated results
 ```
+
+## Implementation Status
+
+- [x] **Phase 1 (MVP)**: AI abstraction, clustering, hierarchy, briefs, and exporters.
+- [ ] **Phase 2 (Pro)**: Internal link graph, cannibalization detection, and technical SEO.
+- [ ] **Phase 3 (Enterprise)**: GSC integration, refresh loop, and WordPress export.

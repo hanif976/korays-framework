@@ -1,0 +1,53 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "Root Topic",
+      "id": "root"
+    },
+    {
+      "label": "cookies / address / hong",
+      "terms": [
+        "cookies",
+        "address",
+        "hong",
+        "printkk",
+        "experience",
+        "usa",
+        "pomona",
+        "kong",
+        "free",
+        "enhance"
+      ],
+      "id": 0
+    },
+    {
+      "label": "brand / phone / case",
+      "terms": [
+        "brand",
+        "phone",
+        "case",
+        "marketing",
+        "design",
+        "create",
+        "like",
+        "product",
+        "brands",
+        "materials"
+      ],
+      "id": 1
+    }
+  ],
+  "edges": [
+    {
+      "source": "root",
+      "target": 0
+    },
+    {
+      "source": "root",
+      "target": 1
+    }
+  ]
+}

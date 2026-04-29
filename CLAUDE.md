@@ -1,14 +1,14 @@
-# CLAUDE.md — korays-framework
+# CLAUDE.md — korays-framework (V2)
 
-Instructions for Claude Code (claude.ai/code) and Claude-based agents.
+Instructions for Gemini CLI, Claude Code, and other AI agents.
 
 ---
 
 ## Project Summary
 
-`korays-framework` is a Python pipeline library that automates the Koray-style topical
-authority SEO workflow. It has 9 steps, each in its own module under `korays/`, chained
-together by `pipeline.py`.
+`korays-framework` is a Topical Authority Operating System. It researches niches, builds semantic topical maps, generates content briefs, and designs internal link graphs.
+
+It is primarily written in **TypeScript (Node.js)** for orchestration and CLI, with optional **Python** workers for heavy NLP/ML.
 
 ---
 
@@ -16,68 +16,58 @@ together by `pipeline.py`.
 
 ```bash
 # Setup
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt && pip install -e .
+npm install
 
-# Test (always run before and after changes)
-python -m pytest tests/ -v
+# Build
+npm run build
 
-# CLI smoke-run
-python pipeline.py --urls https://example.com --clusters 3
+# Run (requires GEMINI_API_KEY in .env)
+npm run korays -- map --seeds "semantic seo" "topical authority"
+
+# Test
+npm test
 ```
+
+---
+
+## Core Architecture
+
+- `src/core/`: Abstractions, config, AI clients.
+- `src/collectors/`: SERP, seed, and data collectors.
+- `src/nlp/`: Entity extraction, intent classification, NLP processing.
+- `src/agents/`: Specialized agents for clustering, hierarchy, briefs, etc.
+- `src/exporters/`: Markdown, JSON, CSV exporters.
+- `src/orchestrator.ts`: Main pipeline logic.
 
 ---
 
 ## Data Pipeline Chain
 
 ```
-URLs → Seed → DataFrame(+cluster) → Brief → ScoredBrief → LinkedBrief → files
+Seeds → Query Expansion → SERP Collection → Intent Classification → Hybrid Clustering → Topical Hierarchy → Entity/EAV Extraction → Brief Generation → Link Graph Builder → Exports
 ```
-
-Each arrow corresponds to one module. Do not skip or reorder steps.
-
----
-
-## Module Locations
-
-| Class | File |
-|-------|------|
-| `SeedCollector` | `korays/seed_collector.py` |
-| `Normalizer` | `korays/normalizer.py` |
-| `Clusterer` | `korays/clusterer.py` |
-| `HierarchyBuilder` | `korays/hierarchy_builder.py` |
-| `BriefGenerator` | `korays/brief_generator.py` |
-| `Scorer` | `korays/scorer.py` |
-| `InternalLinker` | `korays/internal_linker.py` |
-| `Exporter` | `korays/exporter.py` |
-| `Refresher` | `korays/refresher.py` |
 
 ---
 
 ## Invariants to Preserve
 
-- `from __future__ import annotations` must be the first import in every module.
-- No `print()` calls in library code — use `logging.getLogger(__name__)`.
-- Tests must not make real HTTP requests.
-- `korays/__init__.py` must export all public classes.
-- The `cluster` column in the DataFrame is always `int` typed.
-- Briefs are always 150-200 words; the scorer penalises deviations.
+- Use TypeScript `ES2022` with `NodeNext` module resolution.
+- All AI calls must go through the `AIClient` abstraction.
+- Use `zod` for all data validation and AI response parsing.
+- Keep the system provider-agnostic.
+- Markdown briefs must follow the template in `MarkdownExporter`.
 
 ---
 
-## Scoring Formula
+## Technical SEO Rules
 
-```
-score = 0.4 × length_score + 0.4 × keyword_density_score + 0.2 × uniqueness_score
-```
-
-Minimum passing score is 8.0/10 by default. Controlled via `--min-score`.
+- Every brief must answer a real user need (People-first).
+- The page must provide original information gain.
+- Every internal link must be semantically relevant.
+- Schema suggestions must match visible content.
 
 ---
 
-## Do Not
+## Search Console Refresh Loop
 
-- Do not add network calls to tests.
-- Do not introduce circular imports between pipeline modules.
-- Do not remove or relax existing assertions in tests.
-- Do not add new dependencies without updating both `requirements.txt` and `pyproject.toml`.
+Integrate GSC data to detect decay and prioritize refreshes. (Phase 3)

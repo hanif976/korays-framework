@@ -1,37 +1,38 @@
-# Cursor Rules — korays-framework
-# These rules are loaded automatically by Cursor IDE.
+# Cursor Rules — korays-framework (V2)
 
 ## Project
-Python library implementing a 9-step Koray-style topical authority SEO pipeline.
-Entry-point: pipeline.py (CLI). Core library: korays/ package.
+Topical Authority Operating System (V2).
+TypeScript (Node.js) orchestrator with AI-agent architecture.
+Entry-point: src/cli.ts. Core library: src/ package.
 
-## Language & Version
-- Python >= 3.9
-- Always add `from __future__ import annotations` as the first import
+## Language & Environment
+- TypeScript 5.x
+- Node.js (ES Modules)
+- Target: ES2022
+- Module Resolution: NodeNext
 
 ## Code Style
-- Type hints on every function signature and dataclass field
-- Use `@dataclass` for all data transfer objects (Seed, Brief, ScoredBrief, LinkedBrief)
-- Use `logging.getLogger(__name__)` — never `print()` in library code
-- Follow the existing module docstring format: `"""Step N — Title.\n\nDescription.\n"""`
+- Strict typing on all variables, functions, and classes.
+- Use Interfaces/Types from `src/types.ts`.
+- Use `winston` for logging — never `console.log` in library code (CLI is OK).
+- Use `zod` for all data validation and AI schema enforcement.
 
 ## Architecture Rules
-- No circular imports: each korays module may only import from earlier pipeline steps
-- pipeline.py is the sole orchestrator — do not add orchestration logic to library modules
-- Every new public class must be exported from korays/__init__.py
+- Provider-agnostic: All AI interactions must use `AIClient` interface.
+- Agent-based: Logic is split into specialized agents (Clustering, Hierarchy, Brief).
+- Orchestrator-led: `src/orchestrator.ts` manages the pipeline flow.
+- Separation of Concerns: Data collection, NLP, Agents, and Exporters must remain decoupled.
 
 ## Pipeline Data Flow
-list[str] URLs → list[Seed] → pd.DataFrame → (+ cluster col) → list[Brief]
-  → list[ScoredBrief] → list[LinkedBrief] → list[str] (output file paths)
+Seeds → Query Data → SERP Snapshot → Clustering → Hierarchy → Entity Extraction → Brief Generation → Exporters
 
 ## Testing
-- Test file: tests/test_pipeline.py
-- Run: `python -m pytest tests/ -v`
-- Use synthetic in-memory data only; no real HTTP calls in tests
-- Mock `requests.get` with `unittest.mock.patch` for SeedCollector tests
+- Framework: `vitest`
+- Use fixtures for SERP and AI responses.
+- No real network calls in unit tests.
 
-## Key Files to Understand First
-1. pipeline.py          — shows the complete data flow
-2. korays/__init__.py   — public API surface
-3. tests/test_pipeline.py — shows expected behaviour of each class
-4. agent.md             — full technical reference
+## Key Files
+1. src/types.ts         — data model
+2. src/orchestrator.ts  — pipeline orchestration
+3. src/core/aiClient.ts — AI abstraction
+4. src/cli.ts           — CLI entry point

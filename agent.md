@@ -171,7 +171,7 @@ paths = Refresher(output_dir="output").refresh(new_urls, n_clusters=5, min_score
 
 ## 8. Code Conventions
 
-- **Python ≥ 3.9**; use `from __future__ import annotations` in every module.
+- **Python ≥ 3.9**; use `from __future__ import annotations` in every module (required for Python 3.9 — PEP 563 postponed evaluation became the default only in 3.10+).
 - **Type hints** everywhere — function signatures, dataclass fields, return types.
 - **`logging`** via `logger = logging.getLogger(__name__)` — never `print()` in library code.
 - **Dataclasses** for plain data objects (`Seed`, `Brief`, `ScoredBrief`, `LinkedBrief`).

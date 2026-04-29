@@ -9,7 +9,7 @@ Each pipeline step lives in a dedicated module under `korays/`:
 | Step | Module | Class | Input → Output |
 |------|--------|-------|----------------|
 | 1 | `seed_collector.py` | `SeedCollector` | `list[str]` URLs → `list[Seed]` |
-| 2 | `normalizer.py` | `Normalizer` | `list[Seed]` → `pd.DataFrame` |
+| 2 | `normalizer.py` | `Normalizer` | `list[Seed]` → `pd.DataFrame` (normalization) |
 | 3 | `clusterer.py` | `Clusterer` | `DataFrame` → `DataFrame` + `cluster_terms` |
 | 4 | `hierarchy_builder.py` | `HierarchyBuilder` | `DataFrame` + terms → `nx.DiGraph` |
 | 5 | `brief_generator.py` | `BriefGenerator` | `DataFrame` + terms → `list[Brief]` |
@@ -25,7 +25,7 @@ Each pipeline step lives in a dedicated module under `korays/`:
 - `LinkedBrief(cluster_id, title, body, score, links)` — with Markdown hyperlinks
 
 ## Code Style Rules
-- Python ≥ 3.9; `from __future__ import annotations` in every file
+- Python ≥ 3.9; use `from __future__ import annotations` in every file (required for 3.9 compatibility — PEP 563 postponed evaluation)
 - Type hints on all function signatures and dataclass fields
 - Use `logging.getLogger(__name__)` — never `print()` in library code
 - Dataclasses for data objects; no mutable default arguments

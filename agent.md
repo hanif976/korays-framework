@@ -1,193 +1,58 @@
-# agent.md
+# Koray-Style Topical Authority Stack: Agent Guide
 
-## Purpose
-This repository is a topical authority and semantic SEO stack for building best-in-class topical maps inspired by Koray-style frameworks.
+## 1. Purpose
+This document serves as a comprehensive guide for the agent operating within the Koray-style topical authority stack. The agent's main purpose is to streamline processes that enhance topical authority through systematic seed collection, normalization, clustering, hierarchy building, brief generation, scoring, internal linking, export, and refresh.
 
-The goal is to:
-- discover seed topics and questions
-- cluster keywords and questions semantically
-- build a hierarchical topical map
-- generate content briefs
-- suggest internal links
-- score topical coverage and gaps
-- refresh the map over time
+## 2. Core Principles
+- **Accuracy**: Maintain precision in data collection and processing.
+- **Efficiency**: Streamline operations to reduce time spent on tasks.
+- **Quality**: Adhere to a high standard of output to ensure authority in the topical domain.
 
-## Core Principles
-1. Optimize for topical coverage, not just keyword volume.
-2. Prefer semantic similarity over simple string matching.
-3. Build topic hierarchies:
-   - Pillar pages
-   - Cluster pages
-   - Support pages
-4. Map entities, intents, and questions to pages.
-5. Avoid duplicate pages and overlapping intent.
-6. Output actionable briefs, not just clusters.
-7. Keep the system reproducible and cache expensive steps.
-8. Re-run analysis when new SERP or content data arrives.
+## 3. Operating Procedure
+1. **Seed Collection**: Identify and gather seeds from reputable sources. 
+   - Sources: Academic publications, trusted websites, and expert blogs.
+   - Frequency: Daily collection.
 
-## Expected Stack Roles
+2. **Normalization**: Standardize the collected data into a uniform format.
+   - Tools: Use data cleaning libraries (e.g., Pandas) to remove duplicates and irrelevant information.
 
-### Research / Input
-- `eagalvez/ustat_backend`
-- `KTG1` research repos
-- `oneai-nlp/oneai-node`
+3. **Clustering**: Group normalized seeds into relevant categories based on their content.
+   - Techniques: Apply clustering algorithms like K-means or hierarchical clustering.
 
-Use these to:
-- collect questions
-- extract topics and keywords
-- enrich text with entities and labels
+4. **Hierarchy Building**: Construct a logical structure representing relationships between topics.
+   - Methodology: Utilize tree or graph structures to visualize connections.
 
-### Clustering
-- `FassihFayyaz/SEO-Clustering-Tool`
-- `bimadewantoro/WebClustering`
-- `mali1sav/embedding-visualisation`
+5. **Brief Generation**: Create concise summaries for each cluster to guide readers.
+   - Format: Each brief should be 150-200 words.
 
-Use these to:
-- group queries by semantic intent
-- cluster by embeddings or TF-IDF
-- visualize cluster quality
-- compare clusters for overlap
+6. **Scoring**: Evaluate the relevance and quality of each brief.
+   - Scale: Use a scoring system from 1 to 10, where 10 represents high authority.
 
-### Hierarchy / Map Building
-- `rhamerly/webmapper`
-- `ikaikahussey/nuhou`
+7. **Internal Linking**: Strategically link clusters to one another to enhance navigation.
+   - Best Practices: Use contextual linking where applicable to foster engagement.
 
-Use these to:
-- create parent-child topic trees
-- identify hub pages
-- identify sibling and supporting articles
+8. **Export**: Prepare the finalized documents for publication.
+   - Formats: Provide outputs in Markdown and PDF.
 
-### Workflow / Automation
-- `AlliDoisCode1234/MartAI`
-- `kushalsarkar404/awwtomation`
+9. **Refresh**: Regularly update the content based on new seeds and changes in topical relevance.
+   - Schedule: Monthly reviews and updates.
 
-Use these to:
-- cache runs
-- track planning steps
-- automate repeatable SEO tasks
-- generate structured outputs
+## 4. Output Format
+- Files will be provided in Markdown format including links, references, and structured data tables where applicable.
 
-## Operating Procedure
+## 5. Quality Bar
+- All outputs must meet a minimum quality score of 8/10 based on the established scoring system.
+- Content must be free from grammatical errors and must reflect the latest research.
 
-### Step 1: Gather inputs
-Collect:
-- seed topic
-- target audience
-- business model
-- geo / language / market
-- known competitors
-- existing content URLs
-- search queries / PAA / SERP data
-- entity list if available
+## 6. Agent Instructions
+- Follow the outlined procedure step-by-step.
+- Report any discrepancies or issues immediately.
 
-### Step 2: Normalize
-Before clustering:
-- lowercase text
-- remove duplicates
-- merge synonyms
-- standardize brand and entity names
-- separate navigational, informational, commercial, and transactional intent
+## 7. Definition of Done
+- All tasks are marked complete when they meet the quality bar and have been reviewed for accuracy and relevance.
 
-### Step 3: Cluster
-Cluster with multiple methods:
-- keyword overlap
-- question similarity
-- embedding similarity
-- SERP similarity
-
-Do not trust only one algorithm.
-Compare results and reconcile conflicts.
-
-### Step 4: Build topic hierarchy
-Convert clusters into:
-- pillar topics
-- cluster topics
-- support topics
-
-For each node, define:
-- primary intent
-- target page type
-- main entity
-- child topics
-- sibling topics
-- internal link targets
-
-### Step 5: Generate content briefs
-For each topic/page:
-- title
-- H1
-- search intent
-- target entity set
-- required subtopics
-- FAQ ideas
-- internal links in/out
-- content depth guidance
-- differentiation angle
-
-### Step 6: Score topical quality
-Score each cluster/page on:
-- completeness
-- overlap risk
-- intent clarity
-- entity coverage
-- depth
-- internal link strength
-- ranking potential
-
-Flag:
-- weak clusters
-- duplicate intents
-- orphan pages
-- under-covered entities
-- over-saturated clusters
-
-### Step 7: Refresh and iterate
-When new data appears:
-- re-cluster
-- compare old vs new map
-- flag new opportunities
-- identify content decay
-- update internal link recommendations
-
-## Output Format
-When producing a topical map, always output:
-
-1. Executive summary
-2. Seed/topic universe
-3. Cluster table
-4. Topical hierarchy
-5. Content brief list
-6. Internal linking plan
-7. Gap analysis
-8. Priority order
-9. Recommended next actions
-
-## Quality Bar
-A good result must:
-- minimize duplication
-- maximize semantic coverage
-- reflect real search intent
-- be easy to turn into content
-- include clear parent/child relationships
-- show explicit gap opportunities
-- support future expansion
-
-## Agent Instructions
-- If data is incomplete, state assumptions explicitly.
-- If multiple clustering methods disagree, prefer semantic intent and SERP evidence over raw keyword overlap.
-- Do not generate final topical maps from seed keywords alone when SERP data or entity data is available.
-- Prefer structured outputs over prose.
-- Reuse cached results when possible.
-- Explain why a cluster belongs where it belongs.
-- Highlight what is missing from the map.
-- Suggest the smallest number of pages needed to cover the universe well.
-
-## Definition of Done
-The topical map is done when:
-- each cluster has a clear purpose
-- each page has a unique intent
-- the hierarchy is coherent
-- internal links are planned
-- coverage gaps are identified
-- duplicate content risk is low
-- the result can be turned into an editorial roadmap
+## 8. Execution Contract
+The agent agrees to follow through the execution of the procedures with diligence:
+- Comply with the frequency and quality requirements.
+- Ensure all outputs are aligned with the core principles outlined.
+- Adhere to feedback provided during review sessions and improve accordingly.

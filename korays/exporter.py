@@ -28,7 +28,8 @@ class Exporter:
             paths.append(md_path)
             if to_pdf:
                 pdf_path = self._write_pdf(brief, md_path)
-                paths.append(pdf_path)
+                if pdf_path:
+                    paths.append(pdf_path)
         logger.info("Exported %d files to %s", len(paths), self.output_dir)
         return paths
 
@@ -46,8 +47,8 @@ class Exporter:
         ]
         if brief.links:
             lines += ["## Related Topics", ""]
-            for link in brief.links:
-                lines.append(f"- [{link}]({link})")
+            for title, href in brief.links:
+                lines.append(f"- [{title}]({href})")
             lines.append("")
         with open(filename, "w", encoding="utf-8") as fh:
             fh.write("\n".join(lines))

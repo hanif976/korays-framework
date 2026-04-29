@@ -12,7 +12,9 @@ python pipeline.py --urls https://example.com/a --clusters 8 --min-score 7 --pdf
 from __future__ import annotations
 
 import argparse
+import json
 import logging
+import os
 import sys
 
 logging.basicConfig(
@@ -98,8 +100,6 @@ def run_pipeline(
 
     # Step 4 — Hierarchy
     logger.info("Step 4/9 — Hierarchy Building")
-    import os
-    import json
     hb = HierarchyBuilder()
     hb.build(df, cluster_terms)
     os.makedirs(output_dir, exist_ok=True)
